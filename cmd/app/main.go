@@ -1,43 +1,36 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/vp2306/fund-forge/config"
-	"github.com/vp2306/fund-forge/internal/handlers"
+	"github.com/joho/godotenv"
+	"github.com/vp2306/fund-forge/internal/db"
 	"github.com/vp2306/fund-forge/internal/routes"
 )
 
 func main() {
 
-	// load config
-	config, err := config.LoadConfig()
+	//load env vars
+	err := godotenv.Load()
+    if err != nil {
+        log.Println("No .env file found (using system env vars)")
+    }
+
+	//connect to db
+	databse, err := db.Connect()
 	if err != nil {
-		log.Fatalf("Failed to load config %v", err)
+		log.Fatalf("Could not connect to the database: %v", err)
 	}
-
-	// new handler 
-	handler := handlers.NewHandlers()
+	defer databse.Close()
+	log.Println("Succesfully connected to the database")
 	
-	// set up http server
+
+	//start router
 	mux := http.NewServeMux()
+	routes.RegisterRoutes(mux)
+	log.Println("listening on :8080...")
+	log.Fatal(http.ListenAndServe(":8080", mux))
 
-	// setup routes
-	routes.Routes(mux, handler)
 
-	// server instance
-	serverAddr := fmt.Sprintf(":%s", config.ServerPort)
-	server := &http.Server{
-		Addr: serverAddr,
-		Handler: mux,
-	}
-
-	fmt.Printf("Server is up and running on port %s\n", serverAddr)
-	if err := server.ListenAndServe(); err != nil{
-		log.Fatalf("Server failed to start %v", err)
-	}
-
-	
 }

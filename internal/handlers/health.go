@@ -5,13 +5,11 @@ import (
 	"net/http"
 )
 
-func (h *Handler) HealthHandler() http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request)  {
-		w.Header().Set("Content-Type", "application/json")
-		response := map[string]string {
-			"message": "server is healthy",
-		}
+type HealthResponse struct {
+	Message string `json:"message"`
+}
 
-		json.NewEncoder(w).Encode(response)
-	}
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(HealthResponse{Message: "server is healthy"})
 }

@@ -6,6 +6,6 @@ import (
 	"github.com/vp2306/fund-forge/internal/handlers"
 )
 
-func Routes(mux *http.ServeMux, h *handlers.Handler){
-	HealthRoute(mux, h)
+func RegisterRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("/api/health", handlers.HealthHandler)
 }
