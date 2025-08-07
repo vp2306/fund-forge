@@ -6,7 +6,10 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/vp2306/fund-forge/internal/db"
+	"github.com/vp2306/fund-forge/internal/handlers"
+	"github.com/vp2306/fund-forge/internal/repositories"
 	"github.com/vp2306/fund-forge/internal/routes"
+	"github.com/vp2306/fund-forge/internal/services"
 )
 
 func main() {
@@ -18,19 +21,22 @@ func main() {
     }
 
 	//connect to db
-	databse, err := db.Connect()
+	db, err := db.Connect()
 	if err != nil {
 		log.Fatalf("Could not connect to the database: %v", err)
 	}
-	defer databse.Close()
+	defer db.Close()
 	log.Println("Succesfully connected to the database")
-	
+
+	//wire dependencies
+	repo := repositories.NewETFRepository(db)
+	service := services.NewETfService(repo)
+	handler := handlers.NewETFHandler(service)
 
 	//start router
 	mux := http.NewServeMux()
-	routes.RegisterRoutes(mux)
+	routes.RegisterEtfRoutes(mux, handler)
 	log.Println("listening on :8080...")
 	log.Fatal(http.ListenAndServe(":8080", mux))
-
 
 }
