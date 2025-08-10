@@ -39,3 +39,15 @@ func (h *ETFHandler) CreateETF(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(createdETF)
 
 }
+
+func (h *ETFHandler) GetAllETFs(w http.ResponseWriter, r *http.Request) {
+	
+	allETFs, err := h.service.GetAllETFs()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(allETFs)
+}

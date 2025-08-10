@@ -15,6 +15,7 @@ func NewETFRepository (db *sql.DB) *ETFRepository {
 	return &ETFRepository{db: db}
 }
 
+//create new
 func (r *ETFRepository) Create(etf models.ETF) (models.ETF, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -42,6 +43,47 @@ func (r *ETFRepository) Create(etf models.ETF) (models.ETF, error) {
 	}
 
 	return etf, nil
+}
+
+//get all
+func (r *ETFRepository) GetAll() ([]models.ETF, error) {
+	rows, err := r.db.Query(`SELECT id, name FROM etfs`)
+	if err != nil{
+		return nil, fmt.Errorf("get etfs: %w", err)
+	}
+	defer rows.Close()
+
+	var etfs []models.ETF
+	for rows.Next() {
+		var etf models.ETF
+		if err:= rows.Scan(&etf.ID, &etf.Name); err != nil {
+			return nil, fmt.Errorf("scan etfs: %w", err)
+		}
+
+		//get holdings
+		holdingRows, err := r.db.Query(`SELECT ticker, weight FROM etf_holdings WHERE etf_id = $1`, etf.ID)
+		
+		if err != nil {
+			return nil, fmt.Errorf("get holdings: %w", err)
+		}
+
+		for holdingRows.Next() {
+			var stock models.Stock
+			if err := holdingRows.Scan(&stock.Ticker, &stock.Weight); err != nil {
+				return nil, fmt.Errorf("scan holdings: %w", err)
+			}
+			etf.Stocks = append(etf.Stocks, stock)
+		}
+		holdingRows.Close()
+
+		etfs = append(etfs, etf)
+
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows error: %w", err)
+	}	
+
+	return etfs, nil
 }
 
 

@@ -11,11 +11,15 @@ func RegisterEtfRoutes(mux *http.ServeMux, handler *handlers.ETFHandler) {
 	mux.HandleFunc("/api/health", handlers.HealthHandler)
 
 	mux.HandleFunc("/api/etfs", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			handler.CreateETF(w, r)
-			return
-		}
 
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		switch r.Method {
+		case http.MethodPost:
+			handler.CreateETF(w, r)
+		case http.MethodGet:
+			handler.GetAllETFs(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+		
 	})
 }

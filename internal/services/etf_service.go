@@ -36,3 +36,7 @@ func (s *ETFService) CreateETF(etf models.ETF) (models.ETF, error) {
 	return s.repo.Create(etf)
 	
 }
+
+func (s *ETFService) GetAllETFs() ([]models.ETF, error) {
+	return s.repo.GetAll()
+}
