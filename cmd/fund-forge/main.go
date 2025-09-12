@@ -16,9 +16,9 @@ func main() {
 
 	//load env vars
 	err := godotenv.Load()
-    if err != nil {
-        log.Println("No .env file found (using system env vars)")
-    }
+	if err != nil {
+		log.Println("No .env file found (using system env vars)")
+	}
 
 	//connect to db
 	db, err := db.Connect()
@@ -26,16 +26,16 @@ func main() {
 		log.Fatalf("Could not connect to the database: %v", err)
 	}
 	defer db.Close()
-	log.Println("Succesfully connected to the database")
+	log.Println("Successfully connected to the database")
 
 	//wire dependencies
 	repo := repositories.NewETFRepository(db)
-	service := services.NewETfService(repo)
+	service := services.NewETFService(repo)
 	handler := handlers.NewETFHandler(service)
 
 	//start router
 	mux := http.NewServeMux()
-	routes.RegisterEtfRoutes(mux, handler)
+	routes.RegisterETFRoutes(mux, handler)
 	log.Println("listening on :8080...")
 	log.Fatal(http.ListenAndServe(":8080", mux))
 
