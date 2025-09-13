@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/vp2306/fund-forge/internal/db"
 	"github.com/vp2306/fund-forge/internal/handlers"
@@ -34,9 +35,9 @@ func main() {
 	handler := handlers.NewETFHandler(service)
 
 	//start router
-	mux := http.NewServeMux()
-	routes.RegisterETFRoutes(mux, handler)
+	r := chi.NewRouter()
+	routes.RegisterETFRoutes(r, handler)
 	log.Println("listening on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Fatal(http.ListenAndServe(":8080", r))
 
 }

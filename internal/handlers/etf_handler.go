@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/vp2306/fund-forge/internal/models"
 	"github.com/vp2306/fund-forge/internal/services"
 )
@@ -16,6 +17,11 @@ type ETFHandler struct {
 
 func NewETFHandler(service *services.ETFService) *ETFHandler {
 	return &ETFHandler{service: service}
+}
+
+func Health(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("server is healthy")
 }
 
 //handle post
@@ -60,7 +66,7 @@ func (h *ETFHandler) GetAllETFs(w http.ResponseWriter, r *http.Request) {
 
 func (h *ETFHandler) GetETFByID(w http.ResponseWriter, r *http.Request) {
 	// Parse the "id" query parameter
-	ids := r.URL.Query().Get("id")
+	ids := chi.URLParam(r, "id")
 	if ids == "" {
 		http.Error(w, "Missing id parameter", http.StatusBadRequest)
 		return
@@ -89,7 +95,7 @@ func (h *ETFHandler) GetETFByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ETFHandler) DeleteETF(w http.ResponseWriter, r *http.Request) {
-	ids := r.URL.Query().Get("id")
+	ids := chi.URLParam(r, "id")
 	if ids == "" {
 		http.Error(w, "Missing id parameter", http.StatusBadRequest)
 		return
@@ -112,7 +118,7 @@ func (h *ETFHandler) DeleteETF(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ETFHandler) UpdateETF(w http.ResponseWriter, r *http.Request) {
-	ids := r.URL.Query().Get("id")
+	ids := chi.URLParam(r, "id")
 	if ids == "" {
 		http.Error(w, "Missing id parameter", http.StatusBadRequest)
 		return
