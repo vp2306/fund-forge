@@ -18,3 +18,9 @@ func RegisterETFRoutes(r chi.Router, handler *handlers.ETFHandler) {
         r.Delete("/{id}", handler.DeleteETF)
     })
 }
+
+func RegisterTradeRoutes(r chi.Router, handler *handlers.TransactionHandler) {
+    r.Route("/api/etfs", func(r chi.Router) {
+        r.Post("/{id}/buy", handler.BuyETF())
+    })
+}

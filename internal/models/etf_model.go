@@ -10,3 +10,9 @@ type ETF struct {
 	Name   string  `json:"name"`
 	Stocks []Stock `json:"stocks"`
 }
+
+type Positions struct {
+	ID   int64 `json:"id"`
+	Name string `json:"name"`
+	
+}
