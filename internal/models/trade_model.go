@@ -18,17 +18,27 @@ type Trade struct {
 
 //purchase/sell within the trade
 type TradeExecution struct {
-	ID          int64      `json:"id"`
-    TradeID     int64      `json:"trade_id"`
-    Ticker      string     `json:"ticker"`
-    Shares      float64    `json:"shares"`
+	ID              int64      `json:"id"`
+    TradeID         int64      `json:"trade_id"`
+    Ticker          string     `json:"ticker"`
+    Shares          float64    `json:"shares"`
+    PricePerShare   float64    `json:"price_per_share"`
+    TotalCost       float64    `json:"total_cost"`
 }
 
 //current holdings
 type Position struct {
-    ID          int64   `json:"id"`
-    Ticker      string  `json:"ticker"`
-    TotalShares float64 `json:"total_shares"`
-    AverageCost float64 `json:"average_cost"`
+    ID              int64   `json:"id"`
+    Ticker          string  `json:"ticker"`
+    TotalShares     float64 `json:"total_shares"`
+    AverageCost     float64 `json:"average_cost"`
+}
+
+type BuyRequest struct {
+    Amount float64 `json:"amount"`
+}
+
+type SellRequest struct {
+    Amount float64 `json:"amount"`
 }
 

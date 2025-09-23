@@ -8,10 +8,12 @@ import (
 )
 
 type Config struct {
-	ServerPort  string
-	DatabaseURL string
-	Environment string
-	LogLevel    string
+	ServerPort         string
+	DatabaseURL        string
+	Environment        string
+	LogLevel           string
+	AlphaVantageAPIKey string
+	AlphaVantageURL    string
 }
 
 func LoadConfig() (*Config, error) {
@@ -20,10 +22,12 @@ func LoadConfig() (*Config, error) {
 	}
 
 	return &Config{
-		ServerPort:  getEnv("SERVER_PORT", "8080"),
-		DatabaseURL: getEnv("DATABASE_URL", "postgres"),
-		Environment: getEnv("ENVIRONMENT", "dev"),
-		LogLevel:    getEnv("LOG_LEVEL", "info"),
+		ServerPort:         getEnv("SERVER_PORT", "8080"),
+		DatabaseURL:        getEnv("DATABASE_URL", "postgres"),
+		Environment:        getEnv("ENVIRONMENT", "dev"),
+		LogLevel:           getEnv("LOG_LEVEL", "info"),
+		AlphaVantageAPIKey: getEnv("ALPHAVANTAGE_API_KEY", ""),
+		AlphaVantageURL:    getEnv("ALPHAVANTAGE_URL", "https://www.alphavantage.co/query"),
 	}, nil
 }
 
